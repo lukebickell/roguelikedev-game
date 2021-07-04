@@ -2,6 +2,7 @@ import { Entity } from "../entities/entity"
 import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
 import { CanvasContext } from "./canvas/canvas"
+import { TileManagement } from "./tile"
 import { Tile } from "./tile-type.enum"
 
 export class GridMap {
@@ -60,22 +61,7 @@ export class GridMap {
     // Fill in tiles
     for (let i = 0; i < this.map.length; i++) {
       for (let j = 0; j < this.map[0].length; j++) {
-        let color = 'white'
-        switch (this.map[i][j]) {
-          case (Tile.FLOOR):
-            color = 'green'
-            break
-          case (Tile.WALL):
-            color = 'blue'
-            break
-        }
-
-        this.canvasContext.drawSquare(
-          j * this.tilePixelWidth,
-          i * this.tilePixelHeight,
-          this.tilePixelWidth,
-          this.tilePixelHeight,
-          color)
+        this.renderTile(this.map[i][j], j, i)
       }
     }
   }
@@ -106,6 +92,15 @@ export class GridMap {
       this.spriteManager.getSpriteSheet(),
       ...this.spriteManager.getSprite(entity.sprite),
       entityCoords.x * this.tilePixelWidth, entityCoords.y * this.tilePixelHeight,
+      this.tilePixelWidth, this.tilePixelHeight
+    )
+  }
+
+  renderTile(tileValue: number, x: number, y: number): void {
+    this.canvasContext.context.drawImage(
+      this.spriteManager.getSpriteSheet(),
+      ...this.spriteManager.getSprite(TileManagement.TileMap[tileValue]),
+      x * this.tilePixelWidth, y * this.tilePixelHeight,
       this.tilePixelWidth, this.tilePixelHeight
     )
   }

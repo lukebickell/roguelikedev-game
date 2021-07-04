@@ -37,8 +37,8 @@ export class SpriteManager {
   getSprite(spriteName: string): [number, number, number, number] {
     const index = this.spriteMap.get(spriteName)
     const row = Math.floor(index / this.spritesPerRow)
-    const x1 = (index % this.spritesPerRow) * this.spriteSize
-    const y1 = row * this.spriteSize
-    return [x1, y1, this.spriteSize, this.spriteSize]
+    const x = (index % this.spritesPerRow) * this.spriteSize
+    const y = row * this.spriteSize
+    return [x, y, this.spriteSize, this.spriteSize]
   }
 }

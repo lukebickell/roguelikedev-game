@@ -5,7 +5,6 @@ import { GridMap } from "./map/grid-map"
 import { SpriteManager } from "./sprite/sprite-manager"
 
 class Game {
-
   private interval: number
 
   private renderer: GridMap
@@ -39,7 +38,7 @@ class Game {
   }
 
   private startGameLoop(): void {
-    this.interval = window.setInterval(this.gameLoop.bind(this), 100)
+    this.interval = window.setInterval(this.gameLoop.bind(this), 200)
   }
 
   private gameLoop = () => {
