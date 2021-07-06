@@ -38,7 +38,7 @@ class Game {
   }
 
   private startGameLoop(): void {
-    this.interval = window.setInterval(this.gameLoop.bind(this), 200)
+    this.interval = window.setInterval(this.gameLoop.bind(this), 100)
   }
 
   private gameLoop = () => {

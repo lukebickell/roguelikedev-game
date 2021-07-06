@@ -1,4 +1,6 @@
 import { KeyboardInputController } from "../input/keyboard-input.controller"
+import { Move } from "../state/component"
+import { player } from "../state/ecs"
 import { Entity } from "./entity"
 
 export class Player extends Entity {
@@ -27,7 +29,7 @@ export class Player extends Entity {
       deltaY += this.speed
     }
     if (deltaY || deltaX) {
-      this.translate(deltaX, deltaY)
+      player.add(Move, { x: deltaX, y: deltaY })
     }
   }
 }

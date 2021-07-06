@@ -1,17 +1,20 @@
 import { Entity } from "../entities/entity"
+import { Entity as GeoticEntity } from 'geotic'
 import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
+import { renderableEntities } from "../systems/render"
 import { CanvasContext } from "./canvas/canvas"
-import { TileManagement } from "./tile"
-import { Tile } from "./tile-type.enum"
+import { Tiles } from "./tile"
+import { Appearance, Position } from "../state/component"
+import { calculateMoves } from "../systems/movement"
 
 export class GridMap {
   private map: number[][] = []
   private tilePixelHeight = 32
   private tilePixelWidth = 32
   private canvasContext: CanvasContext
-
   entities: Entity[] = []
+
 
   constructor(
     private readonly _widthInTiles: number,
@@ -36,7 +39,7 @@ export class GridMap {
     for (let i = 0; i < this._heightInTiles; i++) {
       this.map[i] = []
       for (let j = 0; j < this._widthInTiles; j++) {
-        this.map[i][j] = Tile.WALL
+        this.map[i][j] = Tiles.TileType.WALL
       }
     }
   }
@@ -46,12 +49,15 @@ export class GridMap {
     for (const entity of this.entities) {
       entity.calculateMovement()
       this.checkMovementLegality(entity)
-      this.renderEntity(entity)
+    }
+    calculateMoves()
+    for (const geoticEntity of renderableEntities.get()) {
+      this.renderEntity(geoticEntity)
     }
     //this.drawGrid()
   }
 
-  setTiles(coordinates: Point[], tileType: Tile): void {
+  setTiles(coordinates: Point[], tileType: Tiles.TileType): void {
     for (const coord of coordinates) {
       this.map[coord.y][coord.x] = tileType
     }
@@ -83,15 +89,17 @@ export class GridMap {
 
   private entityCollidesWithObstace(entity: Entity): boolean {
     const entityCoords = entity.getCoordinates()
-    return (this.map[entityCoords.y][entityCoords.x] === Tile.WALL) 
+    return (this.map[entityCoords.y][entityCoords.x] === Tiles.TileType.WALL) 
   }
 
-  renderEntity(entity: Entity): void {
-    const entityCoords = entity.getCoordinates()
+  renderEntity(entity: GeoticEntity): void {
+    const position = entity['position'] as Position
+    const sprite = (entity['appearance'] as Appearance).sprite
+  
     this.canvasContext.context.drawImage(
       this.spriteManager.getSpriteSheet(),
-      ...this.spriteManager.getSprite(entity.sprite),
-      entityCoords.x * this.tilePixelWidth, entityCoords.y * this.tilePixelHeight,
+      ...this.spriteManager.getSprite(sprite),
+      position.x * this.tilePixelWidth, position.y * this.tilePixelHeight,
       this.tilePixelWidth, this.tilePixelHeight
     )
   }
@@ -99,7 +107,7 @@ export class GridMap {
   renderTile(tileValue: number, x: number, y: number): void {
     this.canvasContext.context.drawImage(
       this.spriteManager.getSpriteSheet(),
-      ...this.spriteManager.getSprite(TileManagement.TileMap[tileValue]),
+      ...this.spriteManager.getSprite(Tiles.TileMap.get(tileValue)),
       x * this.tilePixelWidth, y * this.tilePixelHeight,
       this.tilePixelWidth, this.tilePixelHeight
     )

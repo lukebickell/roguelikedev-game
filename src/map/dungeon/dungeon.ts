@@ -1,6 +1,6 @@
 import { Player } from "../../entities/player";
 import { GridMap } from "../grid-map";
-import { Tile } from "../tile-type.enum";
+import { Tiles } from "../tile";
 import { RectangularRoom } from "./rectangular-room";
 
 export class Dungeon {
@@ -37,7 +37,7 @@ export class Dungeon {
       if (!valid) continue
 
       try {
-        this.gridMap.setTiles(newRoom.getInnerTiles(), Tile.FLOOR)
+        this.gridMap.setTiles(newRoom.getInnerTiles(), Tiles.TileType.FLOOR)
       } catch (error) {
         console.log(newRoom)
       }
@@ -46,7 +46,7 @@ export class Dungeon {
       } else {
         const previousRoom = rooms[rooms.length-1]
         const tunnelTiles = this.gridMap.tunnelBetween(previousRoom.getCenter(), newRoom.getCenter())
-        this.gridMap.setTiles(tunnelTiles, Tile.FLOOR)
+        this.gridMap.setTiles(tunnelTiles, Tiles.TileType.FLOOR)
       }
 
       rooms.push(newRoom)
