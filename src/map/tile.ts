@@ -1,14 +1,17 @@
-export namespace Tiles {
-  export enum TileType {
-    NOTHING = 0,
-    FLOOR = 1,
-    WALL = 2,
-  }
+import { Point } from "../point"
 
-  export const TileMap: Map<TileType, string> = 
-    new Map([
-      [TileType.NOTHING, 'dark_part_of_a_room'],
-      [TileType.FLOOR, 'floor_of_a_room'],
-      [TileType.WALL, 'dngn_stone_wall'],
-    ])
+export enum TileType {
+  NOTHING = 'dark_part_of_a_room',
+  FLOOR = 'floor_of_a_room',
+  WALL = 'dngn_stone_wall',
+}
+
+export class Tile {
+  sprite: TileType
+  position: Point
+
+  constructor(sprite: TileType, point: Point) {
+    this.sprite = sprite
+    this.position = point
+  }
 }

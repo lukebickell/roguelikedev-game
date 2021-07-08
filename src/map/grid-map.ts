@@ -1,30 +1,29 @@
-import { Entity } from "../entities/entity"
 import { Entity as GeoticEntity } from 'geotic'
 import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
-import { renderableEntities } from "../systems/render"
 import { CanvasContext } from "./canvas/canvas"
-import { Tiles } from "./tile"
-import { Appearance, Position } from "../state/component"
-import { calculateMoves } from "../systems/movement"
+import { Appearance, Position } from "../state/components"
+import { calculateMoves, playerInputMovement } from "../systems/movement"
+import { KeyboardInputController } from "../input/keyboard-input.controller"
+import { player } from "../state/ecs"
+import { renderEntities } from "../systems/render"
 
 export class GridMap {
-  private map: number[][] = []
+  // private map: number[][] = []
   private tilePixelHeight = 32
   private tilePixelWidth = 32
   private canvasContext: CanvasContext
-  entities: Entity[] = []
-
 
   constructor(
     private readonly _widthInTiles: number,
     private readonly _heightInTiles: number,
     private readonly spriteManager: SpriteManager,
+    private readonly inputController: KeyboardInputController
   ) {
     const canvasPixelWidth = this._widthInTiles * this.tilePixelWidth
     const canvasPixelHeight = this._heightInTiles * this.tilePixelHeight
     this.canvasContext = new CanvasContext(canvasPixelWidth, canvasPixelHeight)
-    this.initializeMap()
+    //this.initializeMap()
   }
 
   get width(): number {
@@ -35,83 +34,85 @@ export class GridMap {
     return this._heightInTiles
   }
 
-  private initializeMap(): void {
-    for (let i = 0; i < this._heightInTiles; i++) {
-      this.map[i] = []
-      for (let j = 0; j < this._widthInTiles; j++) {
-        this.map[i][j] = Tiles.TileType.WALL
-      }
-    }
-  }
+  // private initializeMap(): void {
+  //   for (let i = 0; i < this._heightInTiles; i++) {
+  //     this.map[i] = []
+  //     for (let j = 0; j < this._widthInTiles; j++) {
+  //       this.map[i][j] = Tiles.TileType.WALL
+  //     }
+  //   }
+  // }
 
   updateMap(): void {
-    this.drawBackground()
-    for (const entity of this.entities) {
-      entity.calculateMovement()
-      this.checkMovementLegality(entity)
-    }
-    calculateMoves()
-    for (const geoticEntity of renderableEntities.get()) {
-      this.renderEntity(geoticEntity)
-    }
+    //this.drawBackground()
+    playerInputMovement(this.inputController, player)
+    calculateMoves({ width: this._widthInTiles, height: this._heightInTiles })
+    renderEntities(this.drawCell.bind(this))
     //this.drawGrid()
   }
 
-  setTiles(coordinates: Point[], tileType: Tiles.TileType): void {
-    for (const coord of coordinates) {
-      this.map[coord.y][coord.x] = tileType
-    }
-  }
+  // setTiles(coordinates: Point[], tileType: Tiles.TileType): void {
+  //   for (const coord of coordinates) {
+  //     this.map[coord.y][coord.x] = tileType
+  //   }
+  // }
 
-  drawBackground(): void {
-    // Fill in tiles
-    for (let i = 0; i < this.map.length; i++) {
-      for (let j = 0; j < this.map[0].length; j++) {
-        this.renderTile(this.map[i][j], j, i)
-      }
-    }
-  }
+  // drawBackground(): void {
+  //   // Fill in tiles
+  //   for (let i = 0; i < this.map.length; i++) {
+  //     for (let j = 0; j < this.map[0].length; j++) {
+  //       this.renderTile(this.map[i][j], j, i)
+  //     }
+  //   }
+  // }
 
-  checkMovementLegality(entity: Entity): void {
-    if (this.entityCollidesWithGridBoundaries(entity) ||
-      this.entityCollidesWithObstace(entity)) {
-      entity.sendToPreviousPosition()
-    }
-  }
+  // checkMovementLegality(entity: Entity): void {
+  //   if (this.entityCollidesWithGridBoundaries(entity) ||
+  //     this.entityCollidesWithObstace(entity)) {
+  //     entity.sendToPreviousPosition()
+  //   }
+  // }
 
-  private entityCollidesWithGridBoundaries(entity: Entity): boolean {
-    const entityCoords = entity.getCoordinates()
-    return (entityCoords.x > this.map[0].length - 1) ||
-      (entityCoords.x < 0) ||
-      (entityCoords.y > this.map.length - 1) ||
-      (entityCoords.y < 0)
-  }
+  // private entityCollidesWithGridBoundaries(entity: Entity): boolean {
+  //   const entityCoords = entity.getCoordinates()
+  //   return (entityCoords.x > this.map[0].length - 1) ||
+  //     (entityCoords.x < 0) ||
+  //     (entityCoords.y > this.map.length - 1) ||
+  //     (entityCoords.y < 0)
+  // }
 
-  private entityCollidesWithObstace(entity: Entity): boolean {
-    const entityCoords = entity.getCoordinates()
-    return (this.map[entityCoords.y][entityCoords.x] === Tiles.TileType.WALL) 
-  }
+  // private entityCollidesWithObstace(entity: Entity): boolean {
+  //   const entityCoords = entity.getCoordinates()
+  //   return (this.map[entityCoords.y][entityCoords.x] === Tiles.TileType.WALL) 
+  // }
 
-  renderEntity(entity: GeoticEntity): void {
+  drawCell(entity: GeoticEntity): void {
     const position = entity['position'] as Position
-    const sprite = (entity['appearance'] as Appearance).sprite
-  
+    const appearance = (entity['appearance'] as Appearance)
+
+    if (appearance.backgroundSprite) {
+      this.drawSprite(position.x, position.y, appearance.backgroundSprite)
+    }
+    this.drawSprite(position.x, position.y, appearance.sprite)
+  }
+
+  drawSprite(x: number, y: number, sprite: string): void {
     this.canvasContext.context.drawImage(
       this.spriteManager.getSpriteSheet(),
       ...this.spriteManager.getSprite(sprite),
-      position.x * this.tilePixelWidth, position.y * this.tilePixelHeight,
-      this.tilePixelWidth, this.tilePixelHeight
-    )
-  }
-
-  renderTile(tileValue: number, x: number, y: number): void {
-    this.canvasContext.context.drawImage(
-      this.spriteManager.getSpriteSheet(),
-      ...this.spriteManager.getSprite(Tiles.TileMap.get(tileValue)),
       x * this.tilePixelWidth, y * this.tilePixelHeight,
       this.tilePixelWidth, this.tilePixelHeight
     )
   }
+
+  // renderTile(tileValue: number, x: number, y: number): void {
+  //   this.canvasContext.context.drawImage(
+  //     this.spriteManager.getSpriteSheet(),
+  //     ...this.spriteManager.getSprite(Tiles.TileMap.get(tileValue)),
+  //     x * this.tilePixelWidth, y * this.tilePixelHeight,
+  //     this.tilePixelWidth, this.tilePixelHeight
+  //   )
+  // }
 
   renderGrid(): void  {
     for (let i = 0; i < this._heightInTiles; i++) {

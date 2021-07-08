@@ -1,4 +1,3 @@
-import { Player } from "./entities/player"
 import { KeyboardInputController } from "./input/keyboard-input.controller"
 import { Dungeon } from "./map/dungeon/dungeon"
 import { GridMap } from "./map/grid-map"
@@ -22,11 +21,10 @@ class Game {
     this.inputController = new KeyboardInputController()
     this.spriteManager = new SpriteManager()
     await this.spriteManager.loadSpriteMap()
-    this.renderer = new GridMap(this.width, this.height, this.spriteManager)
+    this.renderer = new GridMap(this.width, this.height, this.spriteManager, this.inputController)
     this.dungeon = new Dungeon(this.renderer)
 
-    const player = new Player(this.inputController)
-    this.dungeon.generateDungeon(player)
+    this.dungeon.generateDungeon()
 
     this.startGameLoop()
   }

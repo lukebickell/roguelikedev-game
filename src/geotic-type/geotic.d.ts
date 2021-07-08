@@ -139,7 +139,7 @@ declare module 'geotic' {
     private static allowMultiple: boolean
     private static keyProperty: any
     static properties: { [key: string]: any }
-    private entity: Entity
+    protected entity: Entity
 
     constructor(properties?: { [key: string]: any })
 

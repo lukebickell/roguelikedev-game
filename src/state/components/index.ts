@@ -1,0 +1,5 @@
+export * from './appearance.component'
+export * from './layers.component'
+export * from './move.component'
+export * from './position.component'
+export * from './properties.component'
