@@ -1,5 +1,5 @@
 import { Point } from "../../point"
-import { Appearance, IsBlocking, Layer100, Position } from "../../state/components"
+import { Appearance, IsBlocking, IsOpaque, Layer100, Position } from "../../state/components"
 import { player } from "../../state/ecs"
 import { GridMap } from "../grid-map"
 import { Tile, TileType } from "../tile"
@@ -55,8 +55,10 @@ export class Dungeon {
       }
       if (rooms.length === 0) {
         const spawn = newRoom.getCenter()
-        const position = player['position'] as Position
-        position.setCoordinates(spawn.x, spawn.y)
+        player.add(Position, {
+          x: spawn.x,
+          y: spawn.y,
+        })
       } else {
         const previousRoom = rooms[rooms.length-1]
         const tunnelTiles = this.gridMap.tunnelBetween(previousRoom.getCenter(), newRoom.getCenter())
@@ -85,6 +87,7 @@ export class Dungeon {
 
       if (tile.sprite === TileType.WALL) {
         entity.add(IsBlocking)
+        entity.add(IsOpaque)
       }
     }
   }

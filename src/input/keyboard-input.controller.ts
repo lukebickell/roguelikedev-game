@@ -29,7 +29,7 @@ export class KeyboardInputController {
     document.addEventListener('keyup', this.keyUpHandler.bind(this), false)
   }
 
-  private keyDownHandler(e): void {
+  private keyDownHandler(e: KeyboardEvent): void {
     //console.log('key down: ' +e.key)
     if (e.key == 'Right' || e.key == 'ArrowRight') {
       this._rightPressed = true
@@ -45,7 +45,7 @@ export class KeyboardInputController {
     }
   }
 
-  private keyUpHandler(e): void {
+  private keyUpHandler(e: KeyboardEvent): void {
     //console.log('key up: ' + e.key)
     if (e.key == 'Right' || e.key == 'ArrowRight') {
       this._rightPressed = false
