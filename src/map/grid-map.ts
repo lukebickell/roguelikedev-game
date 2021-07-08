@@ -2,7 +2,7 @@ import { Entity as GeoticEntity } from 'geotic'
 import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
 import { CanvasContext } from "./canvas/canvas"
-import { Appearance, Position } from "../state/components"
+import { Appearance, IsInFov, Position } from "../state/components"
 import { calculateMoves, playerInputMovement } from "../systems/movement"
 import { KeyboardInputController } from "../input/keyboard-input.controller"
 import { player } from "../state/ecs"
@@ -91,11 +91,15 @@ export class GridMap {
   drawCell(entity: GeoticEntity): void {
     const position = entity['position'] as Position
     const appearance = (entity['appearance'] as Appearance)
+    const isInFov = entity.has(IsInFov)
 
     if (appearance.backgroundSprite) {
       this.drawSprite(position.x, position.y, appearance.backgroundSprite)
     }
     this.drawSprite(position.x, position.y, appearance.sprite)
+    if (!isInFov) {
+      this.drawSquare(position.x, position.y, 'rgba(0, 0, 0, 0.4)')
+    }
   }
 
   drawSprite(x: number, y: number, sprite: string): void {
@@ -107,14 +111,13 @@ export class GridMap {
     )
   }
 
-  // renderTile(tileValue: number, x: number, y: number): void {
-  //   this.canvasContext.context.drawImage(
-  //     this.spriteManager.getSpriteSheet(),
-  //     ...this.spriteManager.getSprite(Tiles.TileMap.get(tileValue)),
-  //     x * this.tilePixelWidth, y * this.tilePixelHeight,
-  //     this.tilePixelWidth, this.tilePixelHeight
-  //   )
-  // }
+  drawSquare(x: number, y: number, color: string): void {
+    this.canvasContext.drawSquare(
+      x * this.tilePixelWidth, y * this.tilePixelHeight,
+      this.tilePixelWidth, this.tilePixelHeight,
+      color
+    )
+  }
 
   renderGrid(): void  {
     for (let i = 0; i < this._heightInTiles; i++) {
