@@ -1,6 +1,6 @@
 import { Point } from "../../point"
-import { Appearance, IsBlocking, IsOpaque, Layer100, Position } from "../../state/components"
-import { player } from "../../state/ecs"
+import { Appearance, CreatureLayer, Description, IsBlocking, IsOpaque, Layer100, Position } from "../../state/components"
+import world, { player } from "../../state/ecs"
 import { GridMap } from "../grid-map"
 import { Tile, TileType } from "../tile"
 import { RectangularRoom } from "./rectangular-room"
@@ -63,6 +63,17 @@ export class Dungeon {
         const previousRoom = rooms[rooms.length-1]
         const tunnelTiles = this.gridMap.tunnelBetween(previousRoom.getCenter(), newRoom.getCenter())
         this.setTiles(tunnelTiles, TileType.FLOOR)
+
+        const spawn = newRoom.getCenter()
+        const dingo = world.createEntity()
+        dingo.add(Position, {
+          x: spawn.x,
+          y: spawn.y,
+        })
+        dingo.add(Appearance)
+        dingo.add(CreatureLayer)
+        dingo.add(IsBlocking)
+        dingo.add(Description, { name: "dingo" })
       }
 
       rooms.push(newRoom)
@@ -88,6 +99,9 @@ export class Dungeon {
       if (tile.sprite === TileType.WALL) {
         entity.add(IsBlocking)
         entity.add(IsOpaque)
+        entity.add(Description, { name: 'wall' })
+      } else {
+        entity.add(Description, { name: 'floor' })
       }
     }
   }

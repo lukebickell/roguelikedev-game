@@ -1,15 +1,17 @@
 import { KeyboardInputController } from "./input/keyboard-input.controller"
+import { FPS } from "./lib/fps"
 import { Dungeon } from "./map/dungeon/dungeon"
 import { GridMap } from "./map/grid-map"
 import { SpriteManager } from "./sprite/sprite-manager"
 
 class Game {
-  private interval: number
+  private animationFrame: number
 
   private renderer: GridMap
   private dungeon: Dungeon
   private inputController: KeyboardInputController
   private spriteManager: SpriteManager
+  private fpsCounter: FPS
 
   constructor(
     private readonly width: number, 
@@ -18,6 +20,7 @@ class Game {
 
   async initialize(): Promise<void> {
     console.log('Initializing Game...')
+    this.fpsCounter = new FPS()
     this.inputController = new KeyboardInputController()
     this.spriteManager = new SpriteManager()
     await this.spriteManager.loadSpriteMap()
@@ -26,22 +29,28 @@ class Game {
 
     this.dungeon.generateDungeon()
 
-    this.startGameLoop()
+    this.animationFrame = window.requestAnimationFrame(this.gameLoop)
+
+    //this.startGameLoop()
   }
 
   endGame(): void {
     alert('Game Over')
     document.location.reload();
-    window.clearInterval(this.interval)
+    window.cancelAnimationFrame(this.animationFrame)
   }
 
-  private startGameLoop(): void {
-    this.interval = window.setInterval(this.gameLoop.bind(this), 100)
-  }
+  // private startGameLoop(): void {
+  //   this.interval = window.setInterval(this.gameLoop.bind(this), 16)
+  // }
 
-  private gameLoop = () => {
+  private gameLoop = (timestamp: number) => {
+
+    this.fpsCounter.calculateFPS(timestamp)
+
     this.dungeon.updateDungeon()
     this.renderer.updateMap()
+    this.animationFrame = window.requestAnimationFrame(this.gameLoop)
   }
 }
 

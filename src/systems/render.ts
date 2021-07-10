@@ -1,5 +1,5 @@
 import world from '../state/ecs'
-import { Appearance, Layer100, Layer300, EntityLayer, Position, IsInFov, IsRevealed } from '../state/components'
+import { Appearance, Layer100, Layer300, CreatureLayer, Position, IsInFov, IsRevealed } from '../state/components'
 import { Entity, Query } from 'geotic'
 
 export const renderableEntities = world.createQuery({
@@ -10,7 +10,7 @@ const anyFov = [IsInFov, IsRevealed]
 export const layerQueries: Query[] = [
   world.createQuery({ all: [Appearance, Position, Layer100], any: anyFov }),
   world.createQuery({ all: [Appearance, Position, Layer300], any: anyFov }),
-  world.createQuery({ all: [Appearance, Position, EntityLayer, IsInFov] })
+  world.createQuery({ all: [Appearance, Position, CreatureLayer, IsInFov] })
 ]
 
 // Put entity rendering here, figure out how to re-abstract it

@@ -1,7 +1,7 @@
 import { Entity } from 'geotic'
 import { KeyboardInputController } from '../input/keyboard-input.controller'
 import { EntityCaches } from '../state/cache'
-import { Move, Position } from '../state/components'
+import { Description, Move, Position } from '../state/components'
 import world from '../state/ecs'
 
 const movableEntities = world.createQuery({
@@ -43,11 +43,20 @@ export function calculateMoves(grid: { width: number, height: number }): void {
     my = Math.min(grid.height - 1, my)
 
     // Blocking entities
-    const collidingEntities = EntityCaches.getEntitiesAtLocation(mx, my)
-    for (const entityId of collidingEntities) {
-      if (world.getEntity(entityId)['isBlocking']) {
+    const overlappingEntities = EntityCaches.getEntitiesAtLocation(mx, my)
+    let blockers: Entity[] = []
+    for (const entityId of overlappingEntities) {
+      const entity = world.getEntity(entityId)
+      if (entity['isBlocking']) {
+        blockers.push(entity)
         moveIsLegal = false
       }
+    }
+
+    for (const blocker of blockers) {
+      const attacker = (entity?.['description'] as Description)?.name || 'something unknown'
+      const target = (blocker?.['description'] as Description)?.name
+      console.log(`${ attacker } kicked a ${ target }`)
     }
 
     if (moveIsLegal) {

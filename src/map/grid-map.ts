@@ -47,8 +47,8 @@ export class GridMap {
   updateMap(): void {
     //this.drawBackground()
     playerInputMovement(this.inputController, player)
-    fov({ width: this._widthInTiles, height: this._heightInTiles })
     calculateMoves({ width: this._widthInTiles, height: this._heightInTiles })
+    fov({ width: this._widthInTiles, height: this._heightInTiles })
     renderEntities(this.drawCell.bind(this))
     //this.drawGrid()
   }
