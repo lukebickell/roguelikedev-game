@@ -1,4 +1,5 @@
-import { Move } from "../state/components"
+import { Move } from "../state/action"
+import { Action } from "../state/components"
 import { player } from "../state/ecs"
 
 enum InputKey {
@@ -38,7 +39,7 @@ export class KeyboardInputController {
       deltaY += 1
     }
     if (deltaY || deltaX) {
-      player.add(Move, { x: deltaX, y: deltaY })
+      player.add(Action, { action: new Move(deltaX, deltaY) })
     }
   }
   

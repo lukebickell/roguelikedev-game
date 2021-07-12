@@ -3,7 +3,7 @@ import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
 import { CanvasContext } from "./canvas/canvas"
 import { Appearance, IsInFov, Position } from "../state/components"
-import { calculateMoves } from "../systems/movement"
+import { calculateMoves } from "../systems/actions"
 import { renderEntities } from "../systems/render"
 import { fov } from '../systems/fov'
 
@@ -43,8 +43,8 @@ export class GridMap {
 
   updateMap(): void {
     //this.drawBackground()
-    calculateMoves({ width: this._widthInTiles, height: this._heightInTiles })
-    fov({ width: this._widthInTiles, height: this._heightInTiles })
+    calculateMoves()
+    fov()
     renderEntities(this.drawCell.bind(this))
     //this.drawGrid()
   }

@@ -1,25 +1,30 @@
-import { Entity } from 'geotic'
-import { EntityCaches } from '../state/cache'
-import { Description, Move, Position } from '../state/components'
-import world from '../state/ecs'
+import { Entity } from "geotic"
+import { GridDimensions } from "../../constants"
+import { EntityCaches } from "../cache"
+import { _Action, Position, Description } from "../components"
+import world from "../ecs"
 
-const movableEntities = world.createQuery({
-  all: [Move]
-})
+export class Move extends _Action {
+  private x: number
+  private y: number
 
-export function calculateMoves(grid: { width: number, height: number }): void {
-  for (const entity of movableEntities.get()) {
+  constructor(x: number, y: number) {
+    super()
+    this.x = x
+    this.y = y
+  }
+
+  perform(entity: Entity): void {
     const position = entity['position'] as Position
-    const move = entity['move'] as Move
     let moveIsLegal = true
 
-    let mx = position.x + move.x
-    let my = position.y + move.y
+    let mx = position.x + this.x
+    let my = position.y + this.y
 
     // Legality checks
     // Grid borders
-    mx = Math.min(grid.width - 1, mx)
-    my = Math.min(grid.height - 1, my)
+    mx = Math.min(GridDimensions.width - 1, mx)
+    my = Math.min(GridDimensions.height - 1, my)
 
     // Blocking entities
     const overlappingEntities = EntityCaches.getEntitiesAtLocation(mx, my)
@@ -32,6 +37,7 @@ export function calculateMoves(grid: { width: number, height: number }): void {
       }
     }
 
+    // Contextual action against blockers
     for (const blocker of blockers) {
       const attacker = (entity?.['description'] as Description)?.name || 'something unknown'
       const target = (blocker?.['description'] as Description)?.name
@@ -41,6 +47,5 @@ export function calculateMoves(grid: { width: number, height: number }): void {
     if (moveIsLegal) {
       position.setCoordinates(mx, my)
     }
-    entity.remove(move)
   }
 }

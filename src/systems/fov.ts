@@ -1,3 +1,4 @@
+import { GridDimensions } from "../constants"
 import createFOV from "../lib/fov"
 import { EntityCaches } from "../state/cache"
 import { IsInFov, IsOpaque, IsRevealed, Position } from "../state/components"
@@ -11,12 +12,12 @@ const opaqueEntites = world.createQuery({
   all: [IsOpaque],
 })
 
-export function fov(grid: { width: number, height: number }): void {
+export function fov(): void {
   const playerPosition = player['position'] as Position
   const originX = playerPosition.x
   const originY = playerPosition.y
 
-  const FOV = createFOV(opaqueEntites, grid.width, grid.height, originX, originY, 10)
+  const FOV = createFOV(opaqueEntites, GridDimensions.width, GridDimensions.height, originX, originY, 10)
 
   // Clear stale FOV
   inFovEntities.get().forEach(entity => entity.remove(entity['isInFov'] as IsInFov))

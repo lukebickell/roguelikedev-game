@@ -1,3 +1,4 @@
+import { GridDimensions } from "./constants"
 import { KeyboardInputController } from "./input/keyboard-input.controller"
 import { FPS } from "./lib/fps"
 import { Dungeon } from "./map/dungeon/dungeon"
@@ -13,18 +14,13 @@ class Game {
   private spriteManager: SpriteManager
   private fpsCounter: FPS
 
-  constructor(
-    private readonly width: number, 
-    private readonly height: number
-  ) {}
-
   async initialize(): Promise<void> {
     console.log('Initializing Game...')
     this.fpsCounter = new FPS()
     new KeyboardInputController()
     this.spriteManager = new SpriteManager()
     await this.spriteManager.loadSpriteMap()
-    this.renderer = new GridMap(this.width, this.height, this.spriteManager)
+    this.renderer = new GridMap(GridDimensions.width, GridDimensions.height, this.spriteManager)
     this.dungeon = new Dungeon(this.renderer)
 
     this.dungeon.generateDungeon()
@@ -54,12 +50,9 @@ class Game {
   }
 }
 
-const WIDTH = 48
-const HEIGHT = 28
-
 function start(): void {
-  const gameArea = new Game(WIDTH, HEIGHT)
-  gameArea.initialize()
+  const game = new Game()
+  game.initialize()
 }
 
 start()

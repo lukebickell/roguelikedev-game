@@ -1,6 +1,6 @@
 export * from './appearance.component'
 export * from './layers.component'
-export * from './move.component'
+export * from './action.component'
 export * from './position.component'
 export * from './properties.component'
 export * from './description.component'
