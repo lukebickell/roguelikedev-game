@@ -3,9 +3,7 @@ import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
 import { CanvasContext } from "./canvas/canvas"
 import { Appearance, IsInFov, Position } from "../state/components"
-import { calculateMoves, playerInputMovement } from "../systems/movement"
-import { KeyboardInputController } from "../input/keyboard-input.controller"
-import { player } from "../state/ecs"
+import { calculateMoves } from "../systems/movement"
 import { renderEntities } from "../systems/render"
 import { fov } from '../systems/fov'
 
@@ -19,7 +17,6 @@ export class GridMap {
     private readonly _widthInTiles: number,
     private readonly _heightInTiles: number,
     private readonly spriteManager: SpriteManager,
-    private readonly inputController: KeyboardInputController
   ) {
     const canvasPixelWidth = this._widthInTiles * this.tilePixelWidth
     const canvasPixelHeight = this._heightInTiles * this.tilePixelHeight
@@ -46,7 +43,6 @@ export class GridMap {
 
   updateMap(): void {
     //this.drawBackground()
-    playerInputMovement(this.inputController, player)
     calculateMoves({ width: this._widthInTiles, height: this._heightInTiles })
     fov({ width: this._widthInTiles, height: this._heightInTiles })
     renderEntities(this.drawCell.bind(this))

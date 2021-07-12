@@ -1,5 +1,4 @@
 import { Entity } from 'geotic'
-import { KeyboardInputController } from '../input/keyboard-input.controller'
 import { EntityCaches } from '../state/cache'
 import { Description, Move, Position } from '../state/components'
 import world from '../state/ecs'
@@ -7,26 +6,6 @@ import world from '../state/ecs'
 const movableEntities = world.createQuery({
   all: [Move]
 })
-
-export function playerInputMovement(inputController: KeyboardInputController, player: Entity): void {
-  let deltaX = 0
-  let deltaY = 0
-  if (inputController.rightPressed) {
-    deltaX += 1
-  }
-  if (inputController.leftPressed) {
-    deltaX -= 1
-  }
-  if (inputController.upPressed) {
-    deltaY -= 1
-  }
-  if (inputController.downPressed) {
-    deltaY += 1
-  }
-  if (deltaY || deltaX) {
-    player.add(Move, { x: deltaX, y: deltaY })
-  }
-}
 
 export function calculateMoves(grid: { width: number, height: number }): void {
   for (const entity of movableEntities.get()) {
