@@ -1,5 +1,5 @@
 import { Point } from "../../point"
-import { Appearance, CreatureLayer, Description, IsBlocking, IsOpaque, Layer100, Position } from "../../state/components"
+import { Ai, Appearance, CreatureLayer, Description, IsBlocking, IsOpaque, Layer100, Position } from "../../state/components"
 import world, { player } from "../../state/ecs"
 import { GridMap } from "../grid-map"
 import { Tile, TileType } from "../tile"
@@ -73,6 +73,7 @@ export class Dungeon {
         dingo.add(Appearance)
         dingo.add(CreatureLayer)
         dingo.add(IsBlocking)
+        dingo.add(Ai)
         dingo.add(Description, { name: "dingo" })
       }
 

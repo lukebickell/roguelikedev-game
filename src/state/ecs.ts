@@ -1,5 +1,5 @@
 import { Engine } from 'geotic'
-import { Appearance, IsBlocking, IsInFov, IsOpaque, IsRevealed, Layer100, Layer300, CreatureLayer, Position, Description, Action } from './components'
+import { Appearance, IsBlocking, IsInFov, IsOpaque, IsRevealed, Layer100, Layer300, CreatureLayer, Position, Description, Action, Ai } from './components'
 
 //export const entityLocationCache = new EntityCache()
 
@@ -8,6 +8,7 @@ const engine = new Engine()
 engine.registerComponent(Appearance)
 engine.registerComponent(Position)
 engine.registerComponent(Action)
+engine.registerComponent(Ai)
 engine.registerComponent(Description)
 engine.registerComponent(IsBlocking)
 engine.registerComponent(IsInFov)

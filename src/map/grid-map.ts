@@ -3,9 +3,6 @@ import { Point } from "../point"
 import { SpriteManager } from "../sprite/sprite-manager"
 import { CanvasContext } from "./canvas/canvas"
 import { Appearance, IsInFov, Position } from "../state/components"
-import { calculateMoves } from "../systems/actions"
-import { renderEntities } from "../systems/render"
-import { fov } from '../systems/fov'
 
 export class GridMap {
   // private map: number[][] = []
@@ -43,9 +40,6 @@ export class GridMap {
 
   updateMap(): void {
     //this.drawBackground()
-    calculateMoves()
-    fov()
-    renderEntities(this.drawCell.bind(this))
     //this.drawGrid()
   }
 

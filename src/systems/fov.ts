@@ -20,7 +20,10 @@ export function fov(): void {
   const FOV = createFOV(opaqueEntites, GridDimensions.width, GridDimensions.height, originX, originY, 10)
 
   // Clear stale FOV
-  inFovEntities.get().forEach(entity => entity.remove(entity['isInFov'] as IsInFov))
+  const inFovClone = [...inFovEntities.get()]
+  for (const entity of inFovClone) {
+    entity.remove(entity['isInFov'] as IsInFov)
+  }
 
   for (const locationId of FOV.fov) {
     const entitiesAtLocation = EntityCaches.entityLocations.getEntitiesForKey(locationId)

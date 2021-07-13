@@ -4,6 +4,12 @@ import { FPS } from "./lib/fps"
 import { Dungeon } from "./map/dungeon/dungeon"
 import { GridMap } from "./map/grid-map"
 import { SpriteManager } from "./sprite/sprite-manager"
+import { Action } from "./state/components"
+import { player } from "./state/ecs"
+import { calculateMoves } from "./systems/actions"
+import { ai } from "./systems/ai"
+import { fov } from "./systems/fov"
+import { renderEntities } from "./systems/render"
 
 class Game {
   private gameAnimationFrame: number
@@ -25,6 +31,7 @@ class Game {
 
     this.dungeon.generateDungeon()
 
+    fov()
     this.gameAnimationFrame = window.requestAnimationFrame(this.gameLoop)
 
     //this.startGameLoop()
@@ -43,9 +50,13 @@ class Game {
   private gameLoop = (timestamp: number) => {
 
     this.fpsCounter.calculateFPS(timestamp)
+    if (player.has(Action)) {
+      calculateMoves()
+      fov()
+      ai()
+    }
 
-    this.dungeon.updateDungeon()
-    this.renderer.updateMap()
+    renderEntities(this.renderer.drawCell.bind(this.renderer))
     this.gameAnimationFrame = window.requestAnimationFrame(this.gameLoop)
   }
 }

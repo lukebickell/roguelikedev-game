@@ -6,10 +6,9 @@ export const renderableEntities = world.createQuery({
   all: [Position, Appearance],
 })
 
-const anyFov = [IsInFov, IsRevealed]
 export const layerQueries: Query[] = [
-  world.createQuery({ all: [Appearance, Position, Layer100], any: anyFov }),
-  world.createQuery({ all: [Appearance, Position, Layer300], any: anyFov }),
+  world.createQuery({ all: [Appearance, Position, Layer100], any: [IsInFov, IsRevealed] }),
+  world.createQuery({ all: [Appearance, Position, Layer300], any: [IsInFov, IsRevealed] }),
   world.createQuery({ all: [Appearance, Position, CreatureLayer, IsInFov] })
 ]
 
