@@ -1,6 +1,6 @@
+import { Entity } from "geotic"
 import { Move } from "../state/action"
 import { Action } from "../state/components"
-import { player } from "../state/ecs"
 
 enum InputKey {
   ArrowRight = 'ArrowRight',
@@ -12,7 +12,7 @@ enum InputKey {
 export class KeyboardInputController {
   private keysPressed: { [key: string]: boolean } = {}
 
-  constructor() {
+  constructor(private readonly player: Entity) {
     this.initializeListeners()
   }
 
@@ -39,7 +39,7 @@ export class KeyboardInputController {
       deltaY += 1
     }
     if (deltaY || deltaX) {
-      player.add(Action, { action: new Move(deltaX, deltaY) })
+      this.player.add(Action, { action: new Move(deltaX, deltaY) })
     }
   }
   

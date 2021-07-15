@@ -1,4 +1,5 @@
 import { Point } from "../point"
+import { PrefabType } from "../state"
 
 export enum TileType {
   NOTHING = 'dark_part_of_a_room',
@@ -7,11 +8,11 @@ export enum TileType {
 }
 
 export class Tile {
-  sprite: TileType
+  prefab: PrefabType
   position: Point
 
-  constructor(sprite: TileType, point: Point) {
-    this.sprite = sprite
+  constructor(prefab: PrefabType, point: Point) {
+    this.prefab = prefab
     this.position = point
   }
 }

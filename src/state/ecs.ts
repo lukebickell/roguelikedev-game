@@ -1,7 +1,24 @@
 import { Engine } from 'geotic'
-import { Appearance, IsBlocking, IsInFov, IsOpaque, IsRevealed, Layer100, Layer300, CreatureLayer, Position, Description, Action, Ai } from './components'
+import { Appearance, IsBlocking, IsInFov, IsOpaque, IsRevealed, Layer100, Layer300, CreatureLayer, Position, Description, Action, Ai, Defense, Health, Power } from './components'
+import { BasePrefabs, Prefabs } from './prefabs'
 
 //export const entityLocationCache = new EntityCache()
+export const enum ComponentName { 
+  Appearance = 'Appearance', 
+  Position = 'Position', 
+  Ai = 'Ai', 
+  Description = 'Description', 
+  IsBlocking = 'IsBlocking', 
+  IsInFov = 'IsInFov', 
+  IsOpaque = 'IsOpaque', 
+  IsRevealed = 'IsRevealed', 
+  Layer100 = 'Layer100', 
+  Layer300 = 'Layer300', 
+  CreatureLayer = 'CreatureLayer',
+  Defense = 'Defense',
+  Health = 'Health',
+  Power = 'Power',
+}
 
 const engine = new Engine()
 
@@ -17,14 +34,17 @@ engine.registerComponent(IsRevealed)
 engine.registerComponent(Layer100)
 engine.registerComponent(Layer300)
 engine.registerComponent(CreatureLayer)
+engine.registerComponent(Defense)
+engine.registerComponent(Health)
+engine.registerComponent(Power)
+
+for (const prefab of BasePrefabs) {
+  engine.registerPrefab(prefab)
+}
+for (const prefab of Prefabs) {
+  engine.registerPrefab(prefab)
+}
 
 const world = engine.createWorld()
-
-const player = world.createEntity()
-player.add(Appearance, { sprite: 'golden_dragon' })
-player.add(CreatureLayer)
-player.add(Description, { name: "You" })
-
-export { player }
 
 export default world

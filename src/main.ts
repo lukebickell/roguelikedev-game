@@ -1,11 +1,13 @@
-import { GridDimensions } from "./constants"
+import { Entity } from "geotic"
 import { KeyboardInputController } from "./input/keyboard-input.controller"
 import { FPS } from "./lib/fps"
+import { Canvas } from "./map/canvas/canvas"
 import { Dungeon } from "./map/dungeon/dungeon"
 import { GridMap } from "./map/grid-map"
 import { SpriteManager } from "./sprite/sprite-manager"
+import { PrefabType } from "./state"
 import { Action } from "./state/components"
-import { player } from "./state/ecs"
+import world from "./state/ecs"
 import { calculateMoves } from "./systems/actions"
 import { ai } from "./systems/ai"
 import { fov } from "./systems/fov"
@@ -19,19 +21,24 @@ class Game {
   //private inputController: KeyboardInputController
   private spriteManager: SpriteManager
   private fpsCounter: FPS
+  private player: Entity
 
   async initialize(): Promise<void> {
     console.log('Initializing Game...')
     this.fpsCounter = new FPS()
-    new KeyboardInputController()
     this.spriteManager = new SpriteManager()
     await this.spriteManager.loadSpriteMap()
-    this.renderer = new GridMap(GridDimensions.width, GridDimensions.height, this.spriteManager)
-    this.dungeon = new Dungeon(this.renderer)
+    Canvas.initializeCanvas()
+    this.renderer = new GridMap(this.spriteManager)
+    
+    this.player = world.createPrefab(PrefabType.Player)
+    new KeyboardInputController(this.player)
+
+    this.dungeon = new Dungeon(this.player)
 
     this.dungeon.generateDungeon()
 
-    fov()
+    fov(this.player['position'])
     this.gameAnimationFrame = window.requestAnimationFrame(this.gameLoop)
 
     //this.startGameLoop()
@@ -50,9 +57,9 @@ class Game {
   private gameLoop = (timestamp: number) => {
 
     this.fpsCounter.calculateFPS(timestamp)
-    if (player.has(Action)) {
+    if (this.player.has(Action)) {
       calculateMoves()
-      fov()
+      fov(this.player['position'])
       ai()
     }
 

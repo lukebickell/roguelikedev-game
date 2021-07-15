@@ -21,7 +21,7 @@ declare module 'geotic' {
     destroyEntities(): void
     destroy(): void
     createQuery(filters: Filters): Query
-    createPrefab(name: string, properties: any): Prefab
+    createPrefab(name: string, properties?: { [key: string]: any }): Entity
     serialize(entities?: Entity[]): { entities: string[] }
     deserialize(data: { entities: string[] }): void
     private _createOrGetEntityById(id: string): Entity
@@ -59,36 +59,47 @@ declare module 'geotic' {
   }
 
   class PrefabRegistry {
-    private _prefabs: any
+    private _prefabs: { [key: string]: PrefabData }
     private _engine: Engine
 
     constructor(engine: Engine)
 
     deserialize(data: any): Prefab
-    register(data: any): void
+    register(data: PrefabData): void
     get(name: string): Prefab
-    create(world: World, name: string, properties: any): Entity
+    create(world: World, name: string, properties: { [key: string]: any }): Entity
   }
 
   class PrefabComponent {
     clazz: typeof Component
-    properties: any
+    properties: { [key: string]: any }
     overwrite: boolean
 
-    constructor(clazz: typeof Component, properties: any, overwrite: boolean)
+    constructor(clazz: typeof Component, properties: { [key: string]: any }, overwrite: boolean)
 
-    applyToEntity(entity: Entity, initialProps: any): void
+    applyToEntity(entity: Entity, initialProps: { [key: string]: any }): void
   }
 
   class Prefab {
     name: string
-    inherit: any[]
+    inherit: string[]
     components: Component[]
 
     constructor(name: string)
 
     addComponent(prefabComponent: PrefabComponent): void
-    applyToEntity(entity: Entity, prefabProps: any): Entity
+    applyToEntity(entity: Entity, prefabProps: { [key: string]: any }): Entity
+  }
+
+  export interface PrefabDataComponent {
+    type: string
+    properties?: { [key: string]: any }
+  }
+
+  export interface PrefabData {
+    name: string
+    inherit?: string[]
+    components?: PrefabDataComponent[]
   }
 
   class EntityEvent {
@@ -171,7 +182,7 @@ declare module 'geotic' {
     _prefabs: PrefabRegistry
 
     registerComponent(clazz: typeof Component): void
-    registerPrefab(data: any): void
+    registerPrefab(data: PrefabData): void
     createWorld(): World
     destroyWorld(world: World): void
   }

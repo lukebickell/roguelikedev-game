@@ -1,10 +1,12 @@
-import { Point } from "../../point"
-import { Ai, Appearance, CreatureLayer, Description, IsBlocking, IsOpaque, Layer100, Position } from "../../state/components"
-import world, { player } from "../../state/ecs"
-import { GridMap } from "../grid-map"
-import { Tile, TileType } from "../tile"
-import { RectangularRoom } from "./rectangular-room"
-import engine from '../../state/ecs'
+import { Point } from '../../point'
+import { Position } from '../../state/components'
+import world from '../../state/ecs'
+import { Tile } from '../tile'
+import { RectangularRoom } from './rectangular-room'
+import { Entity } from 'geotic'
+import { PrefabType } from '../../state'
+import { GridDimensions } from '../../constants'
+import { tunnelBetween } from '../../lib/grid'
 
 export class Dungeon {
   private readonly maxRoomSize = 9
@@ -13,7 +15,7 @@ export class Dungeon {
   private _tiles: { [key: string]: Tile } = {}
 
   constructor(
-    private readonly gridMap: GridMap
+    private readonly player: Entity
   ) { }
 
   updateDungeon(): void {
@@ -22,12 +24,12 @@ export class Dungeon {
 
   generateDungeon(): void {
     const coords: Point[] = []
-    for (let i = 0; i < this.gridMap.width; i++) {
-      for (let j = 0; j < this.gridMap.height; j++) {
+    for (let i = 0; i < GridDimensions.width; i++) {
+      for (let j = 0; j < GridDimensions.height; j++) {
         coords.push(new Point(i, j))
       }
     }
-    this.setTiles(coords, TileType.WALL)
+    this.setTiles(coords, PrefabType.Wall)
 
 
     const rooms: RectangularRoom[] = []
@@ -35,8 +37,8 @@ export class Dungeon {
       const roomWidth = this.randomInt(this.minRoomSize, this.maxRoomSize)
       const roomHeight = this.randomInt(this.minRoomSize, this.maxRoomSize)
 
-      const x = this.randomInt(0, this.gridMap.width - roomWidth - 1)
-      const y = this.randomInt(0, this.gridMap.height - roomHeight - 1)
+      const x = this.randomInt(0, GridDimensions.width - roomWidth - 1)
+      const y = this.randomInt(0, GridDimensions.height - roomHeight - 1)
 
       const newRoom = new RectangularRoom(x, y, roomWidth, roomHeight)
 
@@ -49,32 +51,28 @@ export class Dungeon {
       if (!valid) continue
 
       try {
-        this.setTiles(newRoom.getInnerTiles(), TileType.FLOOR)
+        this.setTiles(newRoom.getInnerTiles(), PrefabType.Floor)
       } catch (error) {
         console.log(newRoom)
       }
       if (rooms.length === 0) {
         const spawn = newRoom.getCenter()
-        player.add(Position, {
+        this.player.add(Position, {
           x: spawn.x,
           y: spawn.y,
         })
       } else {
         const previousRoom = rooms[rooms.length-1]
-        const tunnelTiles = this.gridMap.tunnelBetween(previousRoom.getCenter(), newRoom.getCenter())
-        this.setTiles(tunnelTiles, TileType.FLOOR)
+        const tunnelTiles = tunnelBetween(previousRoom.getCenter(), newRoom.getCenter())
+        this.setTiles(tunnelTiles, PrefabType.Floor)
 
+        // Create mobs
         const spawn = newRoom.getCenter()
-        const dingo = world.createEntity()
-        dingo.add(Position, {
-          x: spawn.x,
-          y: spawn.y,
-        })
-        dingo.add(Appearance)
-        dingo.add(CreatureLayer)
-        dingo.add(IsBlocking)
-        dingo.add(Ai)
-        dingo.add(Description, { name: "dingo" })
+        world.createPrefab(PrefabType.Dingo)
+          .add(Position, {
+            x: spawn.x,
+            y: spawn.y,
+          })
       }
 
       rooms.push(newRoom)
@@ -83,7 +81,7 @@ export class Dungeon {
     this.createTileEntities()
   }
 
-  private setTiles(coords: Point[], tileType: TileType): void {
+  private setTiles(coords: Point[], tileType: PrefabType): void {
     for (const coord of coords) {
       this._tiles[`${coord.x},${coord.y}`] = new Tile(tileType, new Point(coord.x, coord.y))
     }
@@ -91,19 +89,10 @@ export class Dungeon {
 
   private createTileEntities(): void {
     for (const tilePos of Object.keys(this._tiles)) {
-      const entity = engine.createEntity()
       const tile = this._tiles[tilePos]
-      entity.add(Appearance, { sprite: tile.sprite})
-      entity.add(Position, { x: tile.position.x, y: tile.position.y })
-      entity.add(Layer100)
+      const position = { x: tile.position.x, y: tile.position.y }
 
-      if (tile.sprite === TileType.WALL) {
-        entity.add(IsBlocking)
-        entity.add(IsOpaque)
-        entity.add(Description, { name: 'wall' })
-      } else {
-        entity.add(Description, { name: 'floor' })
-      }
+      world.createPrefab(tile.prefab).add(Position, position)
     }
   }
 
