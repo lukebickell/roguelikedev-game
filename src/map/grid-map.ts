@@ -71,6 +71,9 @@ export class GridMap {
       this.drawSprite(position.x, position.y, appearance.backgroundSprite)
     }
     this.drawSprite(position.x, position.y, appearance.sprite)
+    if (appearance.foregroundSprite) {
+      this.drawSprite(position.x, position.y, appearance.foregroundSprite)
+    }
     if (!isInFov) {
       this.drawSquare(position.x, position.y, 'rgba(0, 0, 0, 0.4)')
     }

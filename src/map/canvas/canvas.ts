@@ -33,10 +33,10 @@ export class Canvas {
     this.context.clearRect(0, 0, CanvasSize.width, CanvasSize.height)
   }
 
-  static pxToCell(ev: MouseEvent): [number, number] {
+  static pxToCell(canvasX: number, canvasY: number): [number, number] {
     const bounds = this.canvas.getBoundingClientRect();
-    const relativeX = ev.clientX - bounds.left
-    const relativeY = ev.clientY - bounds.top
+    const relativeX = canvasX - bounds.left
+    const relativeY = canvasY - bounds.top
     const colPos = Math.trunc((relativeX / TilePixelSize.width))
     const rowPos = Math.trunc((relativeY / TilePixelSize.height))
   

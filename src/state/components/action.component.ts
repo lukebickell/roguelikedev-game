@@ -11,6 +11,7 @@ export abstract class _Action {
 
 export class Action extends Component {
   action: _Action
+  static allowMultiple = true
 
   static properties = {
     action: _Action

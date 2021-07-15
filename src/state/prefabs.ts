@@ -66,6 +66,10 @@ export const Prefabs: PrefabData[] = [
         type: ComponentName.Appearance,
         properties: { sprite: 'golden_dragon' },
       },
+      { 
+        type: ComponentName.Power,
+        properties: { max: 5, current: 5 },
+      },
       {
         type: ComponentName.Description,
         properties: { name: 'you' },

@@ -7,7 +7,7 @@ const entitiesWithAnAction = world.createQuery({
 
 export function calculateMoves(): void {
   for (const entity of entitiesWithAnAction.get()) {
-    const action = entity['action'] as Action
-    action.perform()
+    const actions = entity['action'] as Action[]
+    actions[0].perform()
   }
 }

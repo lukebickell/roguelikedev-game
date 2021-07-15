@@ -1,8 +1,9 @@
 import { Entity } from "geotic"
+import { Action, Position, _Action } from ".."
 import { GridDimensions } from "../../constants"
 import { EntityCaches } from "../cache"
-import { _Action, Position, Description } from "../components"
 import world from "../ecs"
+import { Attack } from "./attack"
 
 export class Move extends _Action {
   private x: number
@@ -39,9 +40,10 @@ export class Move extends _Action {
 
     // Contextual action against blockers
     for (const blocker of blockers) {
-      const attacker = (entity?.['description'] as Description)?.name || 'something unknown'
-      const target = (blocker?.['description'] as Description)?.name
-      console.log(`${ attacker } kicked a ${ target }`)
+      // Add an Attack action, then execute it
+      entity.add(Action, { action: new Attack(blocker)})
+      const currentActions = entity['action'] as Action[]
+      currentActions[currentActions.length - 1].perform()
     }
 
     if (moveIsLegal) {

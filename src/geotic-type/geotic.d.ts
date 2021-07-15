@@ -103,13 +103,13 @@ declare module 'geotic' {
   }
 
   class EntityEvent {
-    data: any
+    data: { [key: string]: any }
     prevented: boolean
     handled: boolean
     name: string
     handlerName: string
 
-    constructor(name: string, data: any)
+    constructor(name: string, data: { [key: string]: any })
 
     is(name: string): boolean
     handle(): void
@@ -143,12 +143,12 @@ declare module 'geotic' {
     remove(component: Component): void
     destroy(): void
     serialize(): { id: any, [key: string]: Component}
-    fireEvent(name: string, data: any): EntityEvent
+    fireEvent(name: string, data: { [key: string]: any }): EntityEvent
   }
 
   class Component {
-    private static allowMultiple: boolean
-    private static keyProperty: any
+    static allowMultiple: boolean
+    static keyProperty: any
     static properties: { [key: string]: any }
     protected entity: Entity
 

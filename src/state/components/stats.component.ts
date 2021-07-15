@@ -1,4 +1,4 @@
-import { Component } from 'geotic'
+import { Component, EntityEvent } from 'geotic'
 
 export class Defense extends Component {
   max: number
@@ -15,6 +15,12 @@ export class Health extends Component {
   static properties = {
     max: 1,
     current: 1
+  }
+
+  onTakeDamage(evt: EntityEvent): void {
+    this.current -= evt.data.amount
+
+    evt.handle()
   }
 }
 

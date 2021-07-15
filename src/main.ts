@@ -1,4 +1,5 @@
 import { Entity } from "geotic"
+import { ClickController } from "./input/click-controller"
 import { KeyboardInputController } from "./input/keyboard-input.controller"
 import { FPS } from "./lib/fps"
 import { Canvas } from "./map/canvas/canvas"
@@ -33,6 +34,7 @@ class Game {
     
     this.player = world.createPrefab(PrefabType.Player)
     new KeyboardInputController(this.player)
+    new ClickController()
 
     this.dungeon = new Dungeon(this.player)
 

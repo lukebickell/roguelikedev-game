@@ -7,8 +7,9 @@ const aiEntities = ecs.createQuery({
 
 export function ai(): void {
   aiEntities.get().forEach((entity) => {
-    console.log(
-      `${entity['description'].name} ${entity.id} ponders it's existence.`
-    )
+    entity['description'].name
+    // console.log(
+    //   `${entity['description'].name} ${entity.id} ponders it's existence.`
+    // )
   })
 }
