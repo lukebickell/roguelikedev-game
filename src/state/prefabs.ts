@@ -89,6 +89,10 @@ export const Prefabs: PrefabData[] = [
         type: ComponentName.Description,
         properties: { name: 'dingo' },
       },
+      { 
+        type: ComponentName.Power,
+        properties: { max: 2, current: 2 },
+      },
     ],
   }
 ]

@@ -3,6 +3,10 @@ import { Entity } from "geotic"
 export class EntityCache {
   private _cache: Map<string, Set<string>> = new Map()
 
+  get cache(): Map<string, Set<string>> {
+    return this._cache
+  }
+
   add(key: string, entity: Entity): void {
     const entityId = entity.id
     if (!this._cache.get(key)) {
@@ -24,6 +28,8 @@ export class EntityCache {
 
 export class EntityCaches {
   public static entityLocations = new EntityCache()
+  public static lastPFMatrix: number[][] = []
+  public static lastPFPath: number[][] = []
 
   public static addEntityToLocationCache(x: number, y: number, entity: Entity): void {
     this.entityLocations.add(this.locId(x, y), entity)

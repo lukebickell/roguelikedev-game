@@ -1,5 +1,5 @@
 import { Engine } from 'geotic'
-import { Appearance, IsBlocking, IsInFov, IsOpaque, IsRevealed, Layer100, Layer300, CreatureLayer, Position, Description, Action, Ai, Defense, Health, Power } from './components'
+import { Appearance, IsBlocking, IsInFov, IsOpaque, IsRevealed, Layer100, Layer300, CreatureLayer, Position, Description, Action, Ai, Defense, Health, Power, IsDead } from './components'
 import { BasePrefabs, Prefabs } from './prefabs'
 
 //export const entityLocationCache = new EntityCache()
@@ -18,6 +18,7 @@ export const enum ComponentName {
   Defense = 'Defense',
   Health = 'Health',
   Power = 'Power',
+  IsDead = 'IsDead',
 }
 
 const engine = new Engine()
@@ -37,6 +38,7 @@ engine.registerComponent(CreatureLayer)
 engine.registerComponent(Defense)
 engine.registerComponent(Health)
 engine.registerComponent(Power)
+engine.registerComponent(IsDead)
 
 for (const prefab of BasePrefabs) {
   engine.registerPrefab(prefab)

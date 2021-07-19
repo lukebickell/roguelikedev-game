@@ -8,11 +8,13 @@ import { Attack } from "./attack"
 export class Move extends _Action {
   private x: number
   private y: number
+  private relative: boolean
 
-  constructor(x: number, y: number) {
+  constructor(x: number, y: number, relative = true) {
     super()
     this.x = x
     this.y = y
+    this.relative = relative
   }
 
   perform(entity: Entity): void {
@@ -21,6 +23,11 @@ export class Move extends _Action {
 
     let mx = position.x + this.x
     let my = position.y + this.y
+
+    if (!this.relative) {
+      mx = this.x
+      my = this.y
+    }
 
     // Legality checks
     // Grid borders

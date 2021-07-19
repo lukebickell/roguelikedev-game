@@ -20,7 +20,7 @@ export class ClickController {
       const entity = world.getEntity(entityId)
 
       console.log(
-        `${entity['appearance'].sprite} ${entity['description'].name}`,
+        `${entity['appearance'].sprite} ${entity['description'].name} (${x}, ${y}) `,
         entity.serialize()
       );
     }
