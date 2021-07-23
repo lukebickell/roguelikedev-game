@@ -1,11 +1,11 @@
 import { Entity } from 'geotic'
-import { Defense, Power, _Action } from '..'
+import { _Action } from '.'
 import { removeComponentSafe } from '../../lib/util'
-import { IsDead, Layer300 } from '../components'
+import { Defense, IsDead, Layer300, Power } from '../components'
 
 export function kill(entity: Entity) {
   entity['appearance'].foregroundSprite = 'i-draining'
-  removeComponentSafe(entity, 'ai')
+  removeComponentSafe(entity, 'moveSet')
   removeComponentSafe(entity, 'isBlocking')
   removeComponentSafe(entity, 'creatureLayer')
   entity.add(IsDead)

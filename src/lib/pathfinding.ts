@@ -1,8 +1,7 @@
-import { Entity } from 'geotic'
 import { AStarFinder, DiagonalMovement, Grid } from 'pathfinding'
 import { GridDimensions } from '../constants'
 import { Point } from '../point'
-import { Action, EntityCaches, IsBlocking, Move } from '../state'
+import { EntityCaches, IsBlocking } from '../state'
 import world from '../state/ecs'
 import { idToCell } from './grid'
 
@@ -43,12 +42,4 @@ export function aStar(start: Point, goal: Point): number[][] {
   EntityCaches.lastPFPath = path
 
   return path
-}
-
-export function moveToTarget(entity: Entity, target: Entity): void {
-  const path = aStar(Point.fromPosition(entity['position']), Point.fromPosition(target['position']))
-  if (path.length) {
-    const newLocation = path[1]
-    entity.add(Action, { action: new Move(newLocation[0], newLocation[1], false) })
-  }
 }

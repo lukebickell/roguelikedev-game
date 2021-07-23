@@ -1,6 +1,5 @@
 import { Entity } from "geotic"
-import { Move } from "../state/action"
-import { Action } from "../state/components"
+import { Action, Walk } from "../state/action"
 
 enum InputKey {
   ArrowRight = 'ArrowRight',
@@ -39,7 +38,8 @@ export class KeyboardInputController {
       deltaY += 1
     }
     if (deltaY || deltaX) {
-      this.player.add(Action, { action: new Move(deltaX, deltaY) })
+      this.player.add(Action, { action: new Walk(deltaX, deltaY) })
+      this.player['pendingPlayerMove'] = true
     }
   }
   

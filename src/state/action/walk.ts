@@ -1,11 +1,12 @@
 import { Entity } from "geotic"
-import { Action, Position, _Action } from ".."
+import { _Action, Action } from "."
+import { Position } from ".."
 import { GridDimensions } from "../../constants"
 import { EntityCaches } from "../cache"
 import world from "../ecs"
 import { Attack } from "./attack"
 
-export class Move extends _Action {
+export class Walk extends _Action {
   private x: number
   private y: number
   private relative: boolean
@@ -47,10 +48,8 @@ export class Move extends _Action {
 
     // Contextual action against blockers
     for (const blocker of blockers) {
-      // Add an Attack action, then execute it
+      // Perform an Attack action
       entity.add(Action, { action: new Attack(blocker)})
-      const currentActions = entity['action'] as Action[]
-      currentActions[currentActions.length - 1].perform()
     }
 
     if (moveIsLegal) {

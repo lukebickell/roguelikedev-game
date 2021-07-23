@@ -1,24 +1,18 @@
-import { Entity } from 'geotic'
-import { moveToTarget } from '../lib/pathfinding'
-import { Action, Ai, Description, IsInFov } from '../state/components'
+import { Action, MoveSet } from '../state'
 import world from '../state/ecs'
 
-const entitiesWithAi = world.createQuery({
-  all: [Ai, Description]
+const entitiesWithMoves = world.createQuery({
+  all: [ MoveSet ]
 })
 
-export function performActions(player: Entity): void {
-  player['action'][0].perform()
-  const entities = [...entitiesWithAi.get()]
+export function getAndPerformActions(): void {
+  const entities = [...entitiesWithMoves.get()]
   for (const entity of entities) {
-    // Get an action based on AI
-    if (entity.has(IsInFov)) {
-      moveToTarget(entity, player)
-    }
+    const moveSet = entity['moveSet'] as MoveSet
 
-    const actions = entity['action'] as Action[]
-    if (actions) {
-      actions[0].perform()
-    }
+    // Get best move from entity's moveset
+    const action = moveSet.getAction()
+    // Add & perform the action
+    entity.add(Action, { action })
   }
 }

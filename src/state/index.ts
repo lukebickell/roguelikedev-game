@@ -1,5 +1,6 @@
 export * from './components'
 export * from './action'
+export * from './move'
 export * from './cache'
 export * from './prefabs'
 export * from './ecs'

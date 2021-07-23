@@ -6,11 +6,13 @@ import { Canvas } from "./map/canvas/canvas"
 import { Dungeon } from "./map/dungeon/dungeon"
 import { GridMap } from "./map/grid-map"
 import { PrefabType } from "./state"
-import { Action, IsDead } from "./state/components"
+import { IsDead } from "./state/components"
 import world from "./state/ecs"
-import { performActions } from "./systems/actions"
+import { getAndPerformActions } from "./systems/actions"
 import { fov } from "./systems/fov"
 import { renderEntities } from "./systems/render"
+
+export const player = world.createPrefab(PrefabType.Player)
 
 class Game {
   private gameAnimationFrame: number
@@ -26,7 +28,7 @@ class Game {
     await GridMap.spriteManager.loadSpriteMap()
     Canvas.initializeCanvas()
     
-    this.player = world.createPrefab(PrefabType.Player)
+    this.player = player
     new KeyboardInputController(this.player)
     new ClickController()
 
@@ -56,10 +58,11 @@ class Game {
       return
     }
     this.fpsCounter.calculateFPS(timestamp)
-    if (this.player.has(Action)) {
-      performActions(this.player)
+    if (this.player['pendingPlayerMove']) {
+      getAndPerformActions()
       //ai(this.player)
       fov(this.player['position'])
+      this.player['pendingPlayerMove'] = false
     }
 
     Canvas.clear()

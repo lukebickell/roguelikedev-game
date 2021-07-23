@@ -1,2 +1,5 @@
-export * from './move'
+export * from './action.abstract'
+export * from './action.component'
+export * from './wait'
+export * from './walk'
 export * from './attack'

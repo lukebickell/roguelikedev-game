@@ -1,8 +1,9 @@
 import { PrefabData } from 'geotic'
 import { ComponentName } from '.'
 import { TileType } from '../map/tile'
+import { BasicMove } from './move'
 
-export const enum PrefabType { Tile = 'tile', Being = 'being', Wall = 'wall', Floor = 'floor', Player = 'player', Dingo = 'dingo' }
+export const enum PrefabType { Tile = 'tile', Being = 'being', Wall = 'wall', Floor = 'floor', Player = 'player', Monster = 'monster', Dingo = 'dingo' }
 
 export const BasePrefabs: PrefabData[] = [
   {
@@ -70,6 +71,10 @@ export const Prefabs: PrefabData[] = [
         type: ComponentName.Power,
         properties: { max: 5, current: 5 },
       },
+      { 
+        type: ComponentName.Health,
+        properties: { max: 50, current: 50 },
+      },
       {
         type: ComponentName.Description,
         properties: { name: 'you' },
@@ -77,10 +82,19 @@ export const Prefabs: PrefabData[] = [
     ],
   },
   {
-    name: PrefabType.Dingo,
+    name: PrefabType.Monster,
     inherit: [ PrefabType.Being ],
     components: [
-      { type: ComponentName.Ai },
+      { type: ComponentName.MoveSet, properties: { moves: [ BasicMove ] } },
+      {
+        type: ComponentName.Description, properties: { name: 'monster' },
+      }
+    ],
+  },
+  {
+    name: PrefabType.Dingo,
+    inherit: [ PrefabType.Monster ],
+    components: [
       {
         type: ComponentName.Appearance,
         properties: { sprite: 'dingo' },
